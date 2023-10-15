@@ -30,7 +30,12 @@
 
     function geoError(error) {
       const domStatus = document.querySelector("#status");
-      domStatus.textContent = `ERROR(${error.code}): ${error.message}`;
+      const errorMap = {
+        "1": "PERMISSION_DENIED",
+        "2": "POSITION_UNAVAILABLE",
+        "3": "TIMEOUT"
+      };
+      domStatus.textContent = `ERROR(${errorMap[error.code]}): ${error.message}`;
     }
 
     function startWatching() {
