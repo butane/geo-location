@@ -30,7 +30,7 @@
 
     function geoError(error) {
       const domStatus = document.querySelector("#status");
-      domStatus.textContent = `ERROR(${err.code}): ${err.message}`;
+      domStatus.textContent = `ERROR(${error.code}): ${error.message}`;
     }
 
     function startWatching() {
