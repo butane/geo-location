@@ -56,6 +56,37 @@
       watchId = false;
       domStatus.textContent = "Watching stopped."
     }
+
+    function copyClipboard() {
+      const domLatitude = document.querySelector("#latitude");
+      const domLongitude = document.querySelector("#longitude");
+      const domAltitude = document.querySelector("#altitude");
+      const domAccuracy = document.querySelector("#accuracy");
+      const domAltitudeAccuracy = document.querySelector("#altitude-accuracy");
+      const domHeading = document.querySelector("#heading");
+      const domSpeed = document.querySelector("#speed");
+      const domLastUpdated = document.querySelector("#last-updated");
+      const domCopyButton = document.querySelector("#copy-button");
+
+      const clipBoardText = `Latitude: ${domLatitude.textContent}
+Longitude: ${domLongitude.textContent}
+Altitude: ${domAltitude.textContent}
+Accuracy: ${domAccuracy.textContent}
+AltitudeAccuracy: ${domAltitudeAccuracy.textContent}
+Heading: ${domHeading.textContent}
+Speed: ${domSpeed.textContent}
+LastUpdated: ${domLastUpdated.textContent}
+`;
+
+      navigator.clipboard.writeText(clipBoardText)
+        .then(() => domCopyButton.textContent = "Copied !")
+        .catch(() => domCopyButton.textContent = "Failed !")
+        .finally(() => {
+          setTimeout(() => {
+            domCopyButton.textContent = "Copy to Clipboard";
+          }, 2000);
+        });
+    }
   </script>
   <style>
     table, th, td {
@@ -86,9 +117,9 @@
     </tbody>
     <tfoot>
       <tr>
-        <td><button onclick="startWatching()">Start Watching</button></td>
-        <td></td>
-        <td><button onclick="stopWatching()">Stop Watching</button></td>
+        <th><button onclick="startWatching()">Start Watching</button></th>
+        <th><button onclick="copyClipboard()" id="copy-button">Copy to Clipboard</button></th>
+        <th><button onclick="stopWatching()">Stop Watching</button></th>
       </tr>
     </tfoot>
   </table>
