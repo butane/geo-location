@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Geo Location Watcher</title>
+  <script>
+    let watchId = false; // false indicates watching not started
+
+    function geoSuccess(position) {
+      const domLatitude = document.querySelector("#latitude");
+      const domLongitude = document.querySelector("#longitude");
+      const domAltitude = document.querySelector("#altitude");
+      const domAccuracy = document.querySelector("#accuracy");
+      const domAltitudeAccuracy = document.querySelector("#altitude-accuracy");
+      const domHeading = document.querySelector("#heading");
+      const domSpeed = document.querySelector("#speed");
+      const domLastUpdated = document.querySelector("#last-updated");
+      const domStatus = document.querySelector("#status");
+
+      domLatitude.textContent = position.coords.latitude;
+      domLongitude.textContent = position.coords.longitude;
+      domAltitude.textContent = position.coords.altitude;
+      domAccuracy.textContent = position.coords.accuracy;
+      domAltitudeAccuracy.textContent = position.coords.altitudeAccuracy;
+      domHeading.textContent = position.coords.heading;
+      domSpeed.textContent = position.coords.speed;
+      domLastUpdated.textContent = new Date(position.timestamp);
+    }
+
+    function geoError(error) {
+      const domStatus = document.querySelector("#status");
+      domStatus.textContent = `ERROR(${err.code}): ${err.message}`;
+    }
+
+    function startWatching() {
+      if (watchId !== false) return;
+      const domStatus = document.querySelector("#status");
+      if (navigator.geolocation) {
+        const geoOptions = {
+          maximumAge: 10000, // use cached data for upto 10 seconds
+          timeout: Infinity, // never timeout
+          enableHighAccuracy: true
+        };
+        watchId = navigator.geolocation.watchPosition(geoSuccess, geoError, geoOptions);
+        domStatus.textContent = "Watching for location updates...";
+      } else {
+        domStatus.textContent = "Geolocation is not supported on your device."
+      }
+    }
+
+    function stopWatching() {
+      if (watchId === false) return;
+      const domStatus = document.querySelector("#status");
+      navigator.geolocation.clearWatch(watchId);
+      watchId = false;
+      domStatus.textContent = "Watching stopped."
+    }
+  </script>
+  <style>
+    table, th, td {
+      border: 1px solid black;
+      border-collapse: collapse;
+      padding: 4px;
+    }
+  </style>
+</head>
+<body>
+  <table>
+    <thead>
+      <tr>
+        <th>Key</th>
+        <th>Value</th>
+        <th>Unit</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Latitude</td><td id="latitude"></td><td>Degrees</td></tr>
+      <tr><td>Longitude</td><td id="longitude"></td><td>Degrees</td></tr>
+      <tr><td>Altitude</td><td id="altitude"></td><td>Meters</td></tr>
+      <tr><td>Accuracy</td><td id="accuracy"></td><td>Meters</td></tr>
+      <tr><td>Altitude Accuracy</td><td id="altitude-accuracy"></td><td>Meters</td></tr>
+      <tr><td>Heading</td><td id="heading"></td><td>Degrees</td></tr>
+      <tr><td>Speed</td><td id="speed"></td><td>Meters per Second</td></tr>
+      <tr><td>Last Updated</td><td id="last-updated" colspan="2"></td></tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td><button onclick="startWatching()">Start Watching</button></td>
+        <td></td>
+        <td><button onclick="stopWatching()">Stop Watching</button></td>
+      </tr>
+    </tfoot>
+  </table>
+  Status: <span id="status">Click start watching to being.</span>
+</body>
+</html>
